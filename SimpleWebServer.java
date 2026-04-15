@@ -49,7 +49,8 @@ class ClientHandler implements Runnable {
 
             String requestLine = in.readLine();
             if (requestLine == null) return;
-            System.out.println("[Client #" + clientId + "] Requested: " + requestLine);
+            long tid = Thread.currentThread().threadId();
+            System.out.println("[Thread #" + tid + "] [Client #" + clientId + "] Requested: " + requestLine);
 
             // Extract the requested path (e.g., "GET /images/img1.jpg HTTP/1.1" -> "/images/img1.jpg")
             String[] requestParts = requestLine.split(" ");
