@@ -12,15 +12,14 @@ public class SimpleWebServer {
     public static void main(String[] args) {
         try (ServerSocket serverSocket = new ServerSocket(PORT)) {
             System.out.println("Server started. Listening on port " + PORT);
-
+            System.out.println("link: http://localhost:" + PORT + "/");
             while (true) {
                 Socket clientSocket = serverSocket.accept();
-                // Safely increment the count
                 int clientNumber = totalClients.incrementAndGet();
                 
                 System.out.println("\n[Client #" + clientNumber + "] Connected: " + clientSocket.getInetAddress());
                 
-                // Spin up a thread for this specific client
+                // A new thread for this specific client
                 new Thread(new ClientHandler(clientSocket, clientNumber)).start();
             }
         } catch (IOException e) {
@@ -42,7 +41,7 @@ class ClientHandler implements Runnable {
     @Override
     public void run() {
         try {
-            // We need the raw OutputStream to send binary image data
+            // OutputStream to send binary image data
             OutputStream dataOut = clientSocket.getOutputStream();
             PrintWriter textOut = new PrintWriter(dataOut, true);
             BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -85,7 +84,7 @@ class ClientHandler implements Runnable {
                     byte[] imageBytes = Files.readAllBytes(imageFile.toPath());
                     
                     textOut.println("HTTP/1.1 200 OK");
-                    // Assuming JPEG. If using PNG, change to image/png
+                    
                     textOut.println("Content-Type: image/jpeg"); 
                     textOut.println("Content-Length: " + imageBytes.length);
                     textOut.println();
